@@ -99,7 +99,7 @@ st.markdown("""
         <a href="#our-products">Cement Products</a>
         <a href="#shrushti-pashukhadya">Shrushti PashuKhadya</a>
         <a href="#amol-aggarbatti">Amol Aggarbatti</a>
-        <a href="#contact-us">Contact Us</a>
+        <a href="#contact-us">Contact</a>
     </div>
 """, unsafe_allow_html=True)
 
@@ -109,23 +109,23 @@ def get_base64_image(path):
         b64_data = base64.b64encode(img_file.read()).decode()
     return f"data:image/png;base64,{b64_data}"
 
-logo_base64 = get_base64_image(os.path.join(os.path.dirname(__file__), "logo.png"))
-
+logo_base64 = get_base64_image("logo.png")
 
 st.markdown(
     f"""
     <div style='text-align: center; margin-bottom: 20px;'>
-        <img src="{logo_base64}" width="550" style="border-radius:10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"/>
+        <img src="{logo_base64}" width="300" style="border-radius:10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"/>
     </div>
     """,
     unsafe_allow_html=True
 )
 
 # ---------- IMAGE LIST ----------
-image_dir = "AmolA1/amol a1/assets"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+image_dir = os.path.join(BASE_DIR, "assets")
 image_files = [
     "poles.webp", "pots.jpeg", "doorframe.webp", "pole5.jpg", "pole2.jpg",
-    "pole3.jpg", "pole4.jpg", "pole7.jpg", "pole1.jpg"
+    "pole3.jpg", "pole4.jpg", "pole7.jpg", "pole1.jpg", "pole6.jpg"
 ]
 
 # ---------- PRODUCT IMAGES ----------
@@ -167,13 +167,14 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-shrushti_folder = os.path.abspath(os.path.join("assets", "pashu"))
-
-shrushti_images = [f for f in os.listdir(shrushti_folder) if os.path.isfile(os.path.join(shrushti_folder, f))]
-
-for img in shrushti_images:
-    img_path = os.path.join(shrushti_folder, img)
-    st.image(img_path, use_column_width=True)
+shrushti_folder = os.path.join(image_dir, "pashu")
+if os.path.exists(shrushti_folder):
+    shrushti_images = [f for f in os.listdir(shrushti_folder) if os.path.isfile(os.path.join(shrushti_folder, f))]
+    for img in shrushti_images:
+        img_path = os.path.join(shrushti_folder, img)
+        st.image(img_path, use_column_width=True)
+else:
+    st.warning(f"Shrushti folder not found at {shrushti_folder}")
 
 # ---------- Amol A1 Aggarbatti ----------
 st.markdown("<div class='section-title' id='amol-aggarbatti'>🕯️ Amol A1 Incense (Aggarbatti)</div>", unsafe_allow_html=True)
@@ -185,17 +186,19 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 aggar_folder = os.path.join(image_dir, "aggar")
-aggar_images = [f for f in os.listdir(aggar_folder) if os.path.isfile(os.path.join(aggar_folder, f))]
-
-aggar_image_paths = [os.path.join(aggar_folder, fname) for fname in sorted(aggar_images)]
-rows = len(aggar_image_paths) // 3 + int(len(aggar_image_paths) % 3 > 0)
-for row in range(rows):
-    cols = st.columns(3)
-    for col in range(3):
-        idx = row * 3 + col
-        if idx < len(aggar_image_paths):
-            with cols[col]:
-                st.markdown(f"<img src='data:image/jpeg;base64,{base64.b64encode(open(aggar_image_paths[idx], 'rb').read()).decode()}' class='image-hover'>", unsafe_allow_html=True)
+if os.path.exists(aggar_folder):
+    aggar_images = [f for f in os.listdir(aggar_folder) if os.path.isfile(os.path.join(aggar_folder, f))]
+    aggar_image_paths = [os.path.join(aggar_folder, fname) for fname in sorted(aggar_images)]
+    rows = len(aggar_image_paths) // 3 + int(len(aggar_image_paths) % 3 > 0)
+    for row in range(rows):
+        cols = st.columns(3)
+        for col in range(3):
+            idx = row * 3 + col
+            if idx < len(aggar_image_paths):
+                with cols[col]:
+                    st.markdown(f"<img src='data:image/jpeg;base64,{base64.b64encode(open(aggar_image_paths[idx], 'rb').read()).decode()}' class='image-hover'>", unsafe_allow_html=True)
+else:
+    st.warning(f"Aggar folder not found at {aggar_folder}")
 
 # ---------- CONTACT SECTION ----------
 st.markdown("<div class='section-title' id='contact-us'>📞 Contact Us</div>", unsafe_allow_html=True)
@@ -203,15 +206,15 @@ st.markdown("<div class='section-title' id='contact-us'>📞 Contact Us</div>", 
 contact_cols = st.columns(2)
 
 with contact_cols[0]:
-    st.markdown("<div style='font-size:30px;'><strong>🏢 Company:</strong> Amol A1 Cement Products</div>", unsafe_allow_html=True)
-    st.markdown("<div style='font-size:30px;'><strong>📍 Address:</strong> Behind Birsa Munda Putla, Main Road, Vairagad</div>", unsafe_allow_html=True)
+    st.markdown("<div style='font-size:20px;'><strong>🏢 Company:</strong> Amol A1 Cement Products</div>", unsafe_allow_html=True)
+    st.markdown("<div style='font-size:20px;'><strong>📍 Address:</strong> Behind Birsa Munda Putla, Main Road, Vairagad</div>", unsafe_allow_html=True)
     st.markdown("""
-        <iframe src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d489.3807263512236!2d80.08671323162423!3d20.433623687998036!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMjDCsDI2JzAwLjEiTiA4MMKwMDUnMTMuMSJF!5e1!3m2!1sen!2sin!4v1750696617998!5m2!1sen!2sin" width="100%" height="300" style="border:0; border-radius: 12px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <iframe src="https://www.google.com/maps/embed?..." width="100%" height="300" style="border:0; border-radius: 12px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     """, unsafe_allow_html=True)
 
 with contact_cols[1]:
-    st.markdown("<div style='font-size:30px;'><strong>📞 Phone:</strong> +91-7020634503</div>", unsafe_allow_html=True)
-    st.markdown("<div style='font-size:30px;'><strong>📧 Email:</strong> Amollanjewar918@gmail.com</div>", unsafe_allow_html=True)
+    st.markdown("<div style='font-size:20px;'><strong>📞 Phone:</strong> +91-7020634503</div>", unsafe_allow_html=True)
+    st.markdown("<div style='font-size:20px;'><strong>📧 Email:</strong> Amollanjewar918@gmail.com</div>", unsafe_allow_html=True)
 
 # ---------- FOOTER ----------
 st.markdown("<div class='footer'>© 2025 Amol A1 Group. All rights reserved.</div>", unsafe_allow_html=True)
