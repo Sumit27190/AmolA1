@@ -109,7 +109,7 @@ def get_base64_image(path):
         b64_data = base64.b64encode(img_file.read()).decode()
     return f"data:image/png;base64,{b64_data}"
 
-logo_base64 = get_base64_image("logo.png")
+logo_base64 = get_base64_image("amol a1/logo.png")
 
 st.markdown(
     f"""
