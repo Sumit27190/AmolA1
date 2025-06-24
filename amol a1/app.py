@@ -109,6 +109,14 @@ def get_base64_image(path):
         b64_data = base64.b64encode(img_file.read()).decode()
     return f"data:image/png;base64,{b64_data}"
 
+def get_image_mime_type(filename):
+    ext = filename.split(".")[-1].lower()
+    return {
+        "jpg": "jpeg", "jpeg": "jpeg",
+        "png": "png",
+        "webp": "webp"
+    }.get(ext, "jpeg")
+
 logo_base64 = get_base64_image("logo.png")
 
 st.markdown(
@@ -141,8 +149,12 @@ else:
         for col in range(3):
             idx = row * 3 + col
             if idx < len(image_paths):
-                with cols[col]:
-                    st.markdown(f"<img src='data:image/jpeg;base64,{base64.b64encode(open(image_paths[idx], 'rb').read()).decode()}' class='image-hover'>", unsafe_allow_html=True)
+                with open(image_paths[idx], "rb") as f:
+                    img_data = f.read()
+                    mime = get_image_mime_type(image_paths[idx])
+                    b64 = base64.b64encode(img_data).decode()
+                    with cols[col]:
+                        st.markdown(f"<img src='data:image/{mime};base64,{b64}' class='image-hover'>", unsafe_allow_html=True)
 
 # ---------- AVAILABLE PRODUCTS ----------
 st.markdown("<div class='section-title' id='available-products'>📦 Product Catalog</div>", unsafe_allow_html=True)
@@ -172,7 +184,10 @@ if os.path.exists(shrushti_folder):
     shrushti_images = [f for f in os.listdir(shrushti_folder) if os.path.isfile(os.path.join(shrushti_folder, f))]
     for img in shrushti_images:
         img_path = os.path.join(shrushti_folder, img)
-        st.image(img_path, use_column_width=True)
+        with open(img_path, "rb") as f:
+            mime = get_image_mime_type(img)
+            b64 = base64.b64encode(f.read()).decode()
+            st.markdown(f"<img src='data:image/{mime};base64,{b64}' class='image-hover'>", unsafe_allow_html=True)
 else:
     st.warning(f"Shrushti folder not found at {shrushti_folder}")
 
@@ -195,8 +210,11 @@ if os.path.exists(aggar_folder):
         for col in range(3):
             idx = row * 3 + col
             if idx < len(aggar_image_paths):
-                with cols[col]:
-                    st.markdown(f"<img src='data:image/jpeg;base64,{base64.b64encode(open(aggar_image_paths[idx], 'rb').read()).decode()}' class='image-hover'>", unsafe_allow_html=True)
+                with open(aggar_image_paths[idx], "rb") as f:
+                    mime = get_image_mime_type(aggar_image_paths[idx])
+                    b64 = base64.b64encode(f.read()).decode()
+                    with cols[col]:
+                        st.markdown(f"<img src='data:image/{mime};base64,{b64}' class='image-hover'>", unsafe_allow_html=True)
 else:
     st.warning(f"Aggar folder not found at {aggar_folder}")
 
