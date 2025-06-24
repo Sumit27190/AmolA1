@@ -122,7 +122,7 @@ st.markdown(
 )
 
 # ---------- IMAGE LIST ----------
-image_dir = "assets"
+image_dir = "AmolA1/amol a1/assets"
 image_files = [
     "poles.webp", "pots.jpeg", "doorframe.webp", "pole5.jpg", "pole2.jpg",
     "pole3.jpg", "pole4.jpg", "pole7.jpg", "pole1.jpg"
