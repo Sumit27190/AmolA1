@@ -109,14 +109,6 @@ def get_base64_image(path):
         b64_data = base64.b64encode(img_file.read()).decode()
     return f"data:image/png;base64,{b64_data}"
 
-def get_image_mime_type(filename):
-    ext = filename.split(".")[-1].lower()
-    return {
-        "jpg": "jpeg", "jpeg": "jpeg",
-        "png": "png",
-        "webp": "webp"
-    }.get(ext, "jpeg")
-
 try:
     logo_base64 = get_base64_image("logo.png")
     st.markdown(
@@ -130,108 +122,93 @@ try:
 except FileNotFoundError:
     st.error("Logo image not found! Please make sure 'logo.png' exists in the app directory.")
 
-# ---------- IMAGE LIST ----------
+# ---------- IMAGE DISPLAY IN TABS ----------
 BASE_DIR = os.path.abspath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 image_dir = os.path.join(BASE_DIR, "assets")
-image_files = [
-    "poles.webp", "pots.jpeg", "doorframe.webp", "pole5.jpg", "pole2.jpg",
-    "pole3.jpg", "pole4.jpg", "pole7.jpg", "pole1.jpg", "pole6.jpg"
-]
 
-# ---------- PRODUCT IMAGES ----------
-st.markdown("<div class='section-title' id='our-products'>🧱 Amol A1 Cement Products</div>", unsafe_allow_html=True)
-image_paths = [os.path.join(image_dir, fname) for fname in image_files if os.path.exists(os.path.join(image_dir, fname))]
+tabs = st.tabs(["Cement Products", "Shrushti Pashukhadya", "Amol Aggarbatti"])
 
-if not image_paths:
-    st.warning("No images found. Please check your 'assets' folder.")
-else:
-    rows = len(image_paths) // 3 + int(len(image_paths) % 3 > 0)
-    for row in range(rows):
-        cols = st.columns(3)
-        for col in range(3):
-            idx = row * 3 + col
-            if idx < len(image_paths):
-                with open(image_paths[idx], "rb") as f:
-                    img_data = f.read()
-                    mime = get_image_mime_type(image_paths[idx])
-                    b64 = base64.b64encode(img_data).decode()
-                    with cols[col]:
-                        st.markdown(f"<img src='data:image/{mime};base64,{b64}' class='image-hover'>", unsafe_allow_html=True)
+# ---------- Cement Tab ----------
+with tabs[0]:
+    st.markdown("<div class='section-title' id='our-products'>🧱 Amol A1 Cement Products</div>", unsafe_allow_html=True)
+    image_files = [
+        "poles.webp", "pots.jpeg", "doorframe.webp", "pole5.jpg", "pole2.jpg",
+        "pole3.jpg", "pole4.jpg", "pole7.jpg", "pole1.jpg", "pole6.jpg"
+    ]
+    image_paths = [os.path.join(image_dir, fname) for fname in image_files if os.path.exists(os.path.join(image_dir, fname))]
+    if not image_paths:
+        st.warning("No images found. Please check your 'assets' folder.")
+    else:
+        rows = len(image_paths) // 3 + int(len(image_paths) % 3 > 0)
+        for row in range(rows):
+            cols = st.columns(3)
+            for col in range(3):
+                idx = row * 3 + col
+                if idx < len(image_paths):
+                    cols[col].image(image_paths[idx], use_column_width=True)
 
-# ---------- AVAILABLE PRODUCTS ----------
-st.markdown("<div class='section-title' id='available-products'>📦 Product Catalog</div>", unsafe_allow_html=True)
-product_items = [
-    "🥵 Cement Pole",
-    "🌿 Cement Kundi",
-    "🚪 Cement Frames",
-    "🥵 Cement Y Pole",
-    "🌿 Cement Vrundavan",
-    "🚪 Cement Havakashi"
-]
+    st.markdown("<div class='section-title' id='available-products'>📦 Product Catalog</div>", unsafe_allow_html=True)
+    product_items = [
+        "🥵 Cement Pole",
+        "🌿 Cement Kundi",
+        "🚪 Cement Frames",
+        "🥵 Cement Y Pole",
+        "🌿 Cement Vrundavan",
+        "🚪 Cement Havakashi"
+    ]
+    for label in product_items:
+        st.markdown(f"<div class='product-card'>{label}</div>", unsafe_allow_html=True)
 
-for label in product_items:
-    st.markdown(f"<div class='product-card'>{label}</div>", unsafe_allow_html=True)
+# ---------- Shrushti PashuKhadya Tab ----------
+with tabs[1]:
+    st.markdown("<div class='section-title' id='shrushti-pashukhadya'>🌾 Shrushti PashuKhadya (Cattle Feed)</div>", unsafe_allow_html=True)
+    st.markdown("""
+    <div class='product-card'>
+        <strong>Shrushti PashuKhadya</strong><br>
+        <span style='font-size:16px; color:#555;'>High-quality cattle feed and supplements supporting farmers and dairy producers.</span>
+    </div>
+    """, unsafe_allow_html=True)
+    shrushti_folder = os.path.join(image_dir, "pashu")
+    if os.path.exists(shrushti_folder):
+        shrushti_images = [f for f in os.listdir(shrushti_folder) if os.path.isfile(os.path.join(shrushti_folder, f))]
+        for img in shrushti_images:
+            img_path = os.path.join(shrushti_folder, img)
+            st.image(img_path, use_column_width=True)
+    else:
+        st.warning(f"Shrushti folder not found at {shrushti_folder}")
 
-# ---------- OTHER BUSINESSES ----------
-st.markdown("<div class='section-title' id='shrushti-pashukhadya'>🌾 Shrushti PashuKhadya (Cattle Feed)</div>", unsafe_allow_html=True)
-st.markdown("""
-<div class='product-card'>
-    <strong>Shrushti PashuKhadya</strong><br>
-    <span style='font-size:16px; color:#555;'>High-quality cattle feed and supplements supporting farmers and dairy producers.</span>
-</div>
-""", unsafe_allow_html=True)
-
-shrushti_folder = os.path.join(image_dir, "pashu")
-if os.path.exists(shrushti_folder):
-    shrushti_images = [f for f in os.listdir(shrushti_folder) if os.path.isfile(os.path.join(shrushti_folder, f))]
-    for img in shrushti_images:
-        img_path = os.path.join(shrushti_folder, img)
-        with open(img_path, "rb") as f:
-            mime = get_image_mime_type(img)
-            b64 = base64.b64encode(f.read()).decode()
-            st.markdown(f"<img src='data:image/{mime};base64,{b64}' class='image-hover'>", unsafe_allow_html=True)
-else:
-    st.warning(f"Shrushti folder not found at {shrushti_folder}")
-
-# ---------- Amol A1 Aggarbatti ----------
-st.markdown("<div class='section-title' id='amol-aggarbatti'>🕯️ Amol A1 Incense (Aggarbatti)</div>", unsafe_allow_html=True)
-st.markdown("""
-<div class='product-card'>
-    <strong>Amol A1 Aggarbatti</strong><br>
-    <span style='font-size:16px; color:#555;'>Premium incense sticks made with natural ingredients for a long-lasting aroma.</span>
-</div>
-""", unsafe_allow_html=True)
-
-aggar_folder = os.path.join(image_dir, "aggar")
-if os.path.exists(aggar_folder):
-    aggar_images = [f for f in os.listdir(aggar_folder) if os.path.isfile(os.path.join(aggar_folder, f))]
-    aggar_image_paths = [os.path.join(aggar_folder, fname) for fname in sorted(aggar_images)]
-    rows = len(aggar_image_paths) // 3 + int(len(aggar_image_paths) % 3 > 0)
-    for row in range(rows):
-        cols = st.columns(3)
-        for col in range(3):
-            idx = row * 3 + col
-            if idx < len(aggar_image_paths):
-                with open(aggar_image_paths[idx], "rb") as f:
-                    mime = get_image_mime_type(aggar_image_paths[idx])
-                    b64 = base64.b64encode(f.read()).decode()
-                    with cols[col]:
-                        st.markdown(f"<img src='data:image/{mime};base64,{b64}' class='image-hover'>", unsafe_allow_html=True)
-else:
-    st.warning(f"Aggar folder not found at {aggar_folder}")
+# ---------- Amol Aggarbatti Tab ----------
+with tabs[2]:
+    st.markdown("<div class='section-title' id='amol-aggarbatti'>🕯️ Amol A1 Incense (Aggarbatti)</div>", unsafe_allow_html=True)
+    st.markdown("""
+    <div class='product-card'>
+        <strong>Amol A1 Aggarbatti</strong><br>
+        <span style='font-size:16px; color:#555;'>Premium incense sticks made with natural ingredients for a long-lasting aroma.</span>
+    </div>
+    """, unsafe_allow_html=True)
+    aggar_folder = os.path.join(image_dir, "aggar")
+    if os.path.exists(aggar_folder):
+        aggar_images = [f for f in os.listdir(aggar_folder) if os.path.isfile(os.path.join(aggar_folder, f))]
+        aggar_image_paths = [os.path.join(aggar_folder, fname) for fname in sorted(aggar_images)]
+        rows = len(aggar_image_paths) // 3 + int(len(aggar_image_paths) % 3 > 0)
+        for row in range(rows):
+            cols = st.columns(3)
+            for col in range(3):
+                idx = row * 3 + col
+                if idx < len(aggar_image_paths):
+                    cols[col].image(aggar_image_paths[idx], use_column_width=True)
+    else:
+        st.warning(f"Aggar folder not found at {aggar_folder}")
 
 # ---------- CONTACT SECTION ----------
 st.markdown("<div class='section-title' id='contact-us'>📞 Contact Us</div>", unsafe_allow_html=True)
-
 contact_cols = st.columns(2)
-
 with contact_cols[0]:
     st.markdown("<div style='font-size:20px;'><strong>🏢 Company:</strong> Amol A1 Cement Products</div>", unsafe_allow_html=True)
     st.markdown("<div style='font-size:20px;'><strong>📍 Address:</strong> Behind Birsa Munda Putla, Main Road, Vairagad</div>", unsafe_allow_html=True)
     st.markdown("""
         <iframe src="https://www.google.com/maps/embed?..." width="100%" height="300" style="border:0; border-radius: 12px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     """, unsafe_allow_html=True)
-
 with contact_cols[1]:
     st.markdown("<div style='font-size:20px;'><strong>📞 Phone:</strong> +91-7020634503</div>", unsafe_allow_html=True)
     st.markdown("<div style='font-size:20px;'><strong>📧 Email:</strong> Amollanjewar918@gmail.com</div>", unsafe_allow_html=True)
