@@ -117,19 +117,21 @@ def get_image_mime_type(filename):
         "webp": "webp"
     }.get(ext, "jpeg")
 
-logo_base64 = get_base64_image("logo.png")
-
-st.markdown(
-    f"""
-    <div style='text-align: center; margin-bottom: 20px;'>
-        <img src="{logo_base64}" width="300" style="border-radius:10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"/>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+try:
+    logo_base64 = get_base64_image("logo.png")
+    st.markdown(
+        f"""
+        <div style='text-align: center; margin-bottom: 20px;'>
+            <img src="{logo_base64}" width="300" style="border-radius:10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"/>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+except FileNotFoundError:
+    st.error("Logo image not found! Please make sure 'logo.png' exists in the app directory.")
 
 # ---------- IMAGE LIST ----------
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.abspath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 image_dir = os.path.join(BASE_DIR, "assets")
 image_files = [
     "poles.webp", "pots.jpeg", "doorframe.webp", "pole5.jpg", "pole2.jpg",
