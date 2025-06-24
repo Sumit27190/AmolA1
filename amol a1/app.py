@@ -167,7 +167,8 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-shrushti_folder = os.path.join(image_dir, "pashu")
+shrushti_folder = os.path.abspath(os.path.join("assets", "pashu"))
+
 shrushti_images = [f for f in os.listdir(shrushti_folder) if os.path.isfile(os.path.join(shrushti_folder, f))]
 
 for img in shrushti_images:
